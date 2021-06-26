@@ -18,8 +18,8 @@ type Editor struct {
 }
 
 type display struct {
-	window       *window
-	displayRange *displayRange
+	window *window
+	dRange *displayRange
 }
 
 type window struct {
@@ -39,8 +39,8 @@ func New(f *os.File, buf *buffer) (*Editor, error) {
 		f:   f,
 		buf: buf,
 		display: &display{
-			window:       &window{},
-			displayRange: &displayRange{},
+			window: &window{},
+			dRange: &displayRange{},
 		},
 		cursor: &cursor{},
 	}, nil
@@ -71,34 +71,34 @@ func (e *Editor) Start() error {
 
 func (e *Editor) adjustDisplayRange() {
 	// move to the outside of the display range
-	if e.display.displayRange.left > e.cursor.column {
+	if e.display.dRange.left > e.cursor.column {
 		if e.cursor.column > e.display.window.width {
-			e.display.displayRange.right = e.cursor.column + e.display.window.width/2
-			e.display.displayRange.left = e.display.displayRange.right - e.display.window.width
+			e.display.dRange.right = e.cursor.column + e.display.window.width/2
+			e.display.dRange.left = e.display.dRange.right - e.display.window.width
 		} else {
-			e.display.displayRange.left = 0
-			e.display.displayRange.right = e.display.window.width
+			e.display.dRange.left = 0
+			e.display.dRange.right = e.display.window.width
 		}
 	}
 	// up
-	if e.display.displayRange.top > e.cursor.line {
-		e.display.displayRange.top--
-		e.display.displayRange.bottom--
+	if e.display.dRange.top > e.cursor.line {
+		e.display.dRange.top--
+		e.display.dRange.bottom--
 	}
 	// down
-	if e.display.displayRange.bottom < e.cursor.line {
-		e.display.displayRange.top++
-		e.display.displayRange.bottom++
+	if e.display.dRange.bottom < e.cursor.line {
+		e.display.dRange.top++
+		e.display.dRange.bottom++
 	}
 	// left
-	if e.display.displayRange.left > e.cursor.column {
-		e.display.displayRange.left--
-		e.display.displayRange.right--
+	if e.display.dRange.left > e.cursor.column {
+		e.display.dRange.left--
+		e.display.dRange.right--
 	}
 	// right
-	if e.display.displayRange.right < e.cursor.column+1 {
-		e.display.displayRange.left++
-		e.display.displayRange.right++
+	if e.display.dRange.right < e.cursor.column+1 {
+		e.display.dRange.left++
+		e.display.dRange.right++
 	}
 }
 
@@ -148,8 +148,8 @@ func (e *Editor) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	case tea.WindowSizeMsg:
 		e.display.window.width = msg.Width
 		e.display.window.height = msg.Height
-		e.display.displayRange.bottom = e.display.displayRange.top + msg.Height - 1
-		e.display.displayRange.right = e.display.displayRange.left + msg.Width
+		e.display.dRange.bottom = e.display.dRange.top + msg.Height - 1
+		e.display.dRange.right = e.display.dRange.left + msg.Width
 	}
 
 	e.adjustDisplayRange()
@@ -157,10 +157,10 @@ func (e *Editor) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 }
 
 func (e *Editor) View() string {
-	top := e.display.displayRange.top
-	bottom := e.display.displayRange.bottom
-	left := e.display.displayRange.left
-	right := e.display.displayRange.right
+	top := e.display.dRange.top
+	bottom := e.display.dRange.bottom
+	left := e.display.dRange.left
+	right := e.display.dRange.right
 
 	// secure space for cursor
 	buf := e.buf.copy()
