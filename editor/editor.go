@@ -23,37 +23,15 @@ type display struct {
 }
 
 type window struct {
-	width  int
-	height int
+	width, height int
 }
 
 type displayRange struct {
 	top, bottom, left, right int
 }
 
-func (d *displayRange) up() {
-	d.top--
-	d.bottom--
-}
-
-func (d *displayRange) down() {
-	d.top++
-	d.bottom++
-}
-
-func (d *displayRange) moveRight() {
-	d.left++
-	d.right++
-}
-
-func (d *displayRange) moveLeft() {
-	d.left--
-	d.right--
-}
-
 type cursor struct {
-	line   int
-	column int
+	line, column int
 }
 
 func New(f *os.File, buf *buffer) (*Editor, error) {
@@ -101,17 +79,25 @@ func (e *Editor) adjustDisplayRange() {
 			e.display.displayRange.right = e.display.window.width
 		}
 	}
+	// up
 	if e.display.displayRange.top > e.cursor.line {
-		e.display.displayRange.up()
+		e.display.displayRange.top--
+		e.display.displayRange.bottom--
 	}
+	// down
 	if e.display.displayRange.bottom < e.cursor.line {
-		e.display.displayRange.down()
+		e.display.displayRange.top++
+		e.display.displayRange.bottom++
 	}
+	// left
 	if e.display.displayRange.left > e.cursor.column {
-		e.display.displayRange.moveLeft()
+		e.display.displayRange.left--
+		e.display.displayRange.right--
 	}
+	// right
 	if e.display.displayRange.right < e.cursor.column+1 {
-		e.display.displayRange.moveRight()
+		e.display.displayRange.left++
+		e.display.displayRange.right++
 	}
 }
 
