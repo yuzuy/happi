@@ -170,7 +170,7 @@ func (e *Editor) View() string {
 		}
 	}
 
-	// styling cursor
+	// style cursor
 	line := buf.line(e.cursor.line)
 	style := termenv.String(string(line[e.cursor.column]))
 	p := termenv.ColorProfile()
