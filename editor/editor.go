@@ -70,6 +70,7 @@ func (e *Editor) Start() error {
 }
 
 func (e *Editor) adjustDisplayRange() {
+	// move to the outside of the display range
 	if e.display.displayRange.left > e.cursor.column {
 		if e.cursor.column > e.display.window.width {
 			e.display.displayRange.right = e.cursor.column + e.display.window.width/2
@@ -114,6 +115,7 @@ func (e *Editor) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case "k":
 			if e.cursor.line > 0 {
 				e.cursor.line--
+				// move to short line
 				if e.cursor.column > len(e.buf.line(e.cursor.line)) {
 					e.cursor.column = len(e.buf.line(e.cursor.line)) - 1
 					if e.cursor.column < 0 {
@@ -124,6 +126,7 @@ func (e *Editor) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case "j":
 			if e.cursor.line < len(e.buf.lines)-1 {
 				e.cursor.line++
+				// move to short line
 				if e.cursor.column > len(e.buf.line(e.cursor.line)) {
 					e.cursor.column = len(e.buf.line(e.cursor.line)) - 1
 					if e.cursor.column < 0 {
