@@ -1,1 +1,3 @@
-stderr
+# files for test run
+/stderr
+/test.txt
