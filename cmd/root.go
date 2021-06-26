@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"errors"
-	"log"
 
 	"github.com/spf13/cobra"
 
@@ -25,7 +24,6 @@ func Execute() error {
 }
 
 func execute(fileName string) error {
-	log.Println("hoge")
 	e, err := editor.Open(fileName)
 	if err != nil {
 		return err
